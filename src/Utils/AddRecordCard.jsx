@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { db } from "../firebase/config";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddRecordCard = () => {
   const [type, setType] = useState("");
@@ -11,6 +13,17 @@ const AddRecordCard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // resetujemo vreme zbog poređenja samo datuma
+
+    if (selectedDate > today) {
+      toast.info("Bićete obavešteni o ovom događaju na taj dan! 📅", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    }
 
     try {
       await addDoc(collection(db, "evidencije"), {

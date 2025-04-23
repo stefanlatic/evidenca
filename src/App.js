@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard';
 import PrivateRoute from './routes/PrivateRoute';
 import Navbar from './components/Navbar';
 import ForgotPassword from './Utils/ForgotPassword';
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
         }
       />
     </Routes>
+    <Footer />
+    <ToastContainer />
     </>
   );
 };
