@@ -40,12 +40,14 @@ const AddAndListMedicationCard = () => {
   const handleAddMedication = async () => {
     if (!medName.trim()) return;
     try {
-      await addDoc(collection(db, "lekovi"), {
-        name: medName.trim(),
-        times: { ...times },
-        createdAt: serverTimestamp(),
-        userId: user.uid,
-      });
+        await addDoc(collection(db, "lekovi"), {
+            name: medName.trim(),
+            times: { ...times },
+            date: new Date().toISOString().split("T")[0], 
+            createdAt: serverTimestamp(),
+            userId: user.uid,
+          });
+          
       setMedName("");
       setTimes({ ujutru: false, podne: false, vece: false });
     } catch (error) {

@@ -11,6 +11,7 @@ import AddAndListMedicationCard from '../Utils/AddAndListMedicationCard';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { collection, query, where, getDocs } from "firebase/firestore";
+import HealthProgressCard from '../Utils/HealtProgressCard';
 
 
 
@@ -63,11 +64,62 @@ const Dashboard = () => {
     navigate('/login');
   };
 
+  useEffect(() => {
+    const fetchTodayMeds = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const q = query(
+        collection(db, "lekovi"),
+        where("userId", "==", user.uid)
+      );
+  
+      const querySnapshot = await getDocs(q);
+  
+      const medsForToday = {
+        ujutru: [],
+        podne: [],
+        vece: []
+      };
+  
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const startDate = data.date || data.createdAt?.toDate()?.toISOString().split("T")[0];
+  
+        if (startDate <= today) {
+          Object.entries(data.times).forEach(([key, isChecked]) => {
+            if (isChecked) {
+              medsForToday[key].push(data.name);
+            }
+          });
+        }
+      });
+  
+      const toastTimes = {
+        ujutru: "8:00",
+        podne: "13:00",
+        vece: "20:00",
+      };
+  
+      Object.entries(medsForToday).forEach(([time, meds]) => {
+        if (meds.length > 0) {
+          toast.info(`⏰ ${toastTimes[time]} je! Vreme je za: ${meds.join(", ")}`, {
+            position: "top-center",
+            autoClose: 7000,
+          });
+        }
+      });
+    };
+  
+    if (user) {
+      fetchTodayMeds();
+    }
+  }, [user]);
+  
   return (
     <>
     <div className="min-h-screen bg-blue-200 flex flex-col items-center">
 
     <div className='mt-7'><WelcomeMessage /></div>
+    <div><HealthProgressCard /></div>
     <p className='text-center text-[#0550b3] font-medium mt-7'>Ako si kontaktirao/komunicirao sa svojim lekarom ili si bio na pregledu kod istog upiši svoju evidenciju!</p>
     
     <div className='flex flex-col lg:flex-row gap-6 px-4 lg:px-16 mt-6'>
