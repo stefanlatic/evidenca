@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase/config";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
 import { doc, deleteDoc } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext"; // <<< Dodato!
 
 const RecordTableCard = () => {
   const [records, setRecords] = useState([]);
-  
+  const { user } = useAuth(); // <<< Uzimamo trenutno ulogovanog korisnika
+
   const getTypeColor = (type) => {
     switch (type.toLowerCase()) {
       case "pregled":
@@ -31,7 +33,13 @@ const RecordTableCard = () => {
   };
 
   useEffect(() => {
-    const q = query(collection(db, "evidencije"), orderBy("createdAt", "desc"));
+    if (!user) return; // Ako korisnik nije ulogovan, ništa ne radi
+
+    const q = query(
+      collection(db, "evidencije"),
+      where("userId", "==", user.uid), // <<< Filtriranje po userId
+      orderBy("createdAt", "desc")
+    );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
@@ -42,7 +50,7 @@ const RecordTableCard = () => {
     });
 
     return () => unsubscribe(); 
-  }, []);
+  }, [user]); // <<< Dodaj 'user' u zavisnosti useEffect-a
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full overflow-x-auto">
@@ -64,20 +72,19 @@ const RecordTableCard = () => {
           <tbody>
             {records.map((record) => (
               <tr key={record.id} className="border-b hover:bg-gray-50">
-              <td className={`py-2 px-4 font-semibold ${getTypeColor(record.type)}`}>{record.type}</td>
-              <td className="py-2 px-4">{record.name}</td>
-              <td className="py-2 px-4">{record.date}</td>
-              <td className="py-2 px-4 break-words max-w-xs">{record.details}</td>
-              <td className="py-2 px-4">
-                <button
-                  onClick={() => handleDelete(record.id)}
-                  className="text-red-500 hover:underline text-sm"
-                >
-                  Obriši
-                </button>
-              </td>
-            </tr>
-            
+                <td className={`py-2 px-4 font-semibold ${getTypeColor(record.type)}`}>{record.type}</td>
+                <td className="py-2 px-4">{record.name}</td>
+                <td className="py-2 px-4">{record.date}</td>
+                <td className="py-2 px-4 break-words max-w-xs">{record.details}</td>
+                <td className="py-2 px-4">
+                  <button
+                    onClick={() => handleDelete(record.id)}
+                    className="text-red-500 hover:underline text-sm"
+                  >
+                    Obriši
+                  </button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>

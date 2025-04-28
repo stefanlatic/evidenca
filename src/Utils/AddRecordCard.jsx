@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { db } from "../firebase/config";
+import { db, auth } from "../firebase/config";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../context/AuthContext'; 
 
 const AddRecordCard = () => {
   const [type, setType] = useState("");
@@ -10,14 +11,14 @@ const AddRecordCard = () => {
   const [date, setDate] = useState("");
   const [details, setDetails] = useState("");
   const [message, setMessage] = useState("");
+  const { user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const selectedDate = new Date(date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // resetujemo vreme zbog poređenja samo datuma
-
+    today.setHours(0, 0, 0, 0); 
     if (selectedDate > today) {
       toast.info("Bićete obavešteni o ovom događaju na taj dan! 📅", {
         position: "top-center",
@@ -31,7 +32,8 @@ const AddRecordCard = () => {
         name,
         date,
         details,
-        createdAt: Timestamp.now(),
+        createdAt: Timestamp.now(),  
+        userId: auth.currentUser.uid
       });
 
       setMessage("✅ Evidencija uspešno sačuvana!");

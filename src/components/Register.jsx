@@ -38,7 +38,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/background.jpg')" }}>
       <div className="bg-white/30 backdrop-blur-md p-8 rounded-xl w-full max-w-md shadow-2xl">
         <div className="flex justify-center mb-4">
-          <img src="/avatar.png" alt="avatar" className="w-16 h-16" />
+          <img src="/avatar.jpg" alt="avatar" className="h-20" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-700">Registracija</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

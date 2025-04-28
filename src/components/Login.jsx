@@ -1,9 +1,9 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import {  signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/config';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider, db } from '../firebase/config';
+import { useNavigate, Link } from 'react-router-dom';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -20,7 +20,21 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        // Ako korisnik još nema dokument, kreiraj ga
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName || "Nepoznato",
+          email: user.email,
+          birthDate: "", // Nemamo datum rodjenja sa Google-a
+        });
+      }
+
       navigate('/dashboard');
     } catch (error) {
       alert('Greška pri Google prijavi: ' + error.message);
@@ -52,17 +66,17 @@ const Login = () => {
             Prijavi se
           </button>
         </form>
+
         <div className="mt-4 text-center">
-        <Link to="/forgot-password" className=" text-blue-500 hover:underline">
+          <Link to="/forgot-password" className="text-blue-500 hover:underline">
             Zaboravljena lozinka?
-        </Link>
+          </Link>
         </div>
+
         <div className="mt-4 text-center">
-       
           <button onClick={handleGoogleLogin} className="text-blue-600 hover:underline">
             Prijavi se putem Google-a
           </button>
-
         </div>
       </div>
     </div>
