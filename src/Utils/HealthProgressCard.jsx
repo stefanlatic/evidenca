@@ -41,7 +41,7 @@ const HealthProgressCard = () => {
           let dnevno = 0;
           if (times.ujutru) dnevno++;
           if (times.podne) dnevno++;
-          if (times.vece) dnevno++;
+          if (times.veče) dnevno++;
       
           newMedData[month] += dnevno;
         });
@@ -123,12 +123,12 @@ const HealthProgressCard = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-lg mt-8">
-      <h2 className="text-2xl font-semibold text-center text-blue-800 mb-4">
+    <div className="w-full h-500px w-[280px] sm:w-[500px] md:w-[700px] xl:w-[900px] max-w-6xl mx-auto px-1 sm:px-6 py-6 bg-white rounded-2xl shadow-lg mt-8">
+      <h2 className="text-xl sm:text-2xl font-semibold text-center text-blue-800 mb-4">
         Tvoj napredak zdravlja!
       </h2>
 
-      <div className="h-[300px] w-[700px]">
+      <div className="w-full  p-2">
         {showMedChart ? (
           <Line data={lineData} options={chartOptions} />
         ) : (
@@ -143,15 +143,15 @@ const HealthProgressCard = () => {
         >
           {showMedChart ? (
             <>
-              ← <span className="ml-2">Grafikon evidencija</span>
+              ← <span className="ml-2 text-xs sm:text-sm sm:text-center">Grafikon evidencija</span>
             </>
           ) : (
             <>
-              → <span className="ml-2">Grafikon lekova</span>
+              → <span className="ml-2 text-xs sm:text-sm sm:text-center">Grafikon lekova</span>
             </>
           )}
         </button>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-xs sm:text-sm">
           {showMedChart ? 'Grafikon tvojih lekova' : 'Grafikon tvojih evidencija'}
         </p>
       </div>

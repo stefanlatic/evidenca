@@ -16,7 +16,7 @@ import { useAuth } from "../context/AuthContext";
 const AddAndListMedicationCard = () => {
   const { user } = useAuth();
   const [medName, setMedName] = useState("");
-  const [times, setTimes] = useState({ ujutru: false, podne: false, vece: false });
+  const [times, setTimes] = useState({ ujutru: false, podne: false, veče: false });
   const [medications, setMedications] = useState([]);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const AddAndListMedicationCard = () => {
           });
           
       setMedName("");
-      setTimes({ ujutru: false, podne: false, vece: false });
+      setTimes({ ujutru: false, podne: false, veče: false });
     } catch (error) {
       console.error("Greška pri dodavanju leka:", error);
     }
@@ -71,8 +71,8 @@ const AddAndListMedicationCard = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md py-6 px-20 w-full">
-      <h2 className="text-xl font-semibold mb-4">Dodaj novi lek, suplement ili vitamin</h2>
+    <div className="bg-white rounded-xl shadow-md py-6 px-4 sm:px-8 w-full">
+      <h2 className="text-sm sm:text-xl font-semibold mb-4">Dodaj novi lek, suplement ili vitamin</h2>
 
       <input
         value={medName}
@@ -82,7 +82,7 @@ const AddAndListMedicationCard = () => {
       />
 
       <div className="flex gap-6 mb-4">
-        {["ujutru", "podne", "vece"].map((time) => (
+        {["ujutru", "podne", "veče"].map((time) => (
           <label key={time} className="flex items-center gap-2 text-gray-700 capitalize">
             <input
               type="checkbox"
@@ -97,20 +97,20 @@ const AddAndListMedicationCard = () => {
 
       <button
         onClick={handleAddMedication}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+        className="bg-blue-600 text-xs sm:text-base text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
       >
         Sačuvaj
       </button>
 
      
-      <div className="mt-8 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-      {["ujutru", "podne", "vece"].map((time) => (
+      <div className=" text-xs sm:text-base mt-8 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {["ujutru", "podne", "veče"].map((time) => (
       <div key={time} className="bg-blue-50 p-4 rounded shadow-sm">
-      <h3 className="text-lg font-semibold capitalize text-blue-700 mb-2">
+      <h3 className="text-xs sm:text-base font-semibold capitalize text-blue-700 mb-2">
         {time}
       </h3>
       {medications.filter((m) => m.times[time]).length === 0 ? (
-        <p className="text-sm text-gray-500 italic">Nema lekova za ovo vreme.</p>
+        <p className="text-xs sm:text-base text-gray-500 italic">Nema lekova za ovo vreme.</p>
       ) : (
         <ul className="space-y-2">
           {medications
@@ -123,7 +123,7 @@ const AddAndListMedicationCard = () => {
                 <span>{med.name}</span>
                 <button
                     onClick={() => handleDelete(med.id)}
-                    className="text-red-500 text-lg hover:opacity-70 ml-3"
+                    className="text-red-500 text-xs sm:text-base hover:opacity-70 ml-3"
                     title="Obriši"
                     >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
